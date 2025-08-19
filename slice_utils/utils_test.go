@@ -57,4 +57,27 @@ var _ = Describe("Slice Utils", Label("Utils"), func() {
 			Expect(result).To(Equal([]int{2, 4, 6, 8, 10}))
 		})
 	})
+
+	Context("Get", func() {
+		It("safely access the slice", func() {
+			s := []int{1, 2, 3, 4, 5, 6, 7, 8, 9}
+
+			res, exists := slice_utils.Get(s, 3)
+			Expect(exists).To(BeTrue())
+			Expect(res).To(Equal(4))
+
+			res, exists = slice_utils.Get(s, 10)
+
+			Expect(exists).To(BeFalse())
+			Expect(res).To(Equal(0))
+
+			res, exists = slice_utils.Get(s, 9)
+			Expect(exists).To(BeFalse())
+			Expect(res).To(Equal(0))
+
+			res, exists = slice_utils.Get(s, 8)
+			Expect(exists).To(BeTrue())
+			Expect(res).To(Equal(9))
+		})
+	})
 })

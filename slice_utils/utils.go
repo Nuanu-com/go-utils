@@ -51,3 +51,12 @@ func Filter[T any](slice []T, filterFn func(T) bool) []T {
 
 	return results
 }
+
+func Get[T any](s []T, idx int) (T, bool) {
+	if idx >= len(s) {
+		var result T
+		return result, false
+	}
+
+	return s[idx], true
+}

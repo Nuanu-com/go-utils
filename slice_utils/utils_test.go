@@ -80,4 +80,20 @@ var _ = Describe("Slice Utils", Label("Utils"), func() {
 			Expect(res).To(Equal(9))
 		})
 	})
+
+	Describe("FindBy", func() {
+		s := []int{1, 3, 5, 6, 7, 8, 9, 6, 4, 3, 2}
+		It("returns the item and true when exists", func() {
+			res, found := slice_utils.FindBy(s, func(i int) bool { return i == 7 })
+
+			Expect(res).To(Equal(7))
+			Expect(found).To(BeTrue())
+		})
+
+		It("returns zero value and false when data does not exists", func() {
+			res, found := slice_utils.FindBy(s, func(i int) bool { return i == 30 })
+			Expect(res).To(Equal(0))
+			Expect(found).To(BeFalse())
+		})
+	})
 })

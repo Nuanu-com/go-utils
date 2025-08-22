@@ -60,3 +60,18 @@ func Get[T any](s []T, idx int) (T, bool) {
 
 	return s[idx], true
 }
+
+func FindBy[T any](s []T, predicate func(T) bool) (T, bool) {
+	var result T
+	found := false
+
+	for _, item := range s {
+		if predicate(item) {
+			result = item
+			found = true
+			break
+		}
+	}
+
+	return result, found
+}

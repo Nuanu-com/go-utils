@@ -1,7 +1,6 @@
 package types
 
 import (
-	"database/sql"
 	"database/sql/driver"
 	"encoding/json"
 )
@@ -24,7 +23,7 @@ func (j *JSONB) Scan(src any) error {
 		}
 	}
 
-	j = &result
+	*j = result
 
 	return nil
 }
@@ -38,8 +37,4 @@ func (j JSONB) Value() (driver.Value, error) {
 	res, err := json.Marshal(j)
 
 	return res, err
-}
-
-func NewValuer() sql.Scanner {
-	return &JSONB{}
 }

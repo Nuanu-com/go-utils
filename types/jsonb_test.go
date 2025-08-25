@@ -32,4 +32,17 @@ var _ = Describe("JSONB", func() {
 			Expect(obj).To(Equal(types.JSONB{"name": "George"}))
 		})
 	})
+
+	Describe("ToJSONB", func() {
+		It("converts any thing into JSONB", func() {
+			aa := map[string]any{
+				"foo": "bar",
+			}
+
+			bb, err := types.ToJSONB(aa)
+
+			Expect(err).To(BeNil())
+			Expect(bb).To(Equal(types.JSONB{"foo": "bar"}))
+		})
+	})
 })

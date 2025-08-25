@@ -38,3 +38,18 @@ func (j JSONB) Value() (driver.Value, error) {
 
 	return res, err
 }
+
+func ToJSONB(data any) (JSONB, error) {
+	var result JSONB
+	jsonByte, err := json.Marshal(data)
+
+	if err != nil {
+		return result, err
+	}
+
+	if err := json.Unmarshal(jsonByte, &result); err != nil {
+		return result, err
+	}
+
+	return result, nil
+}

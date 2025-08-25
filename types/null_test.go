@@ -31,13 +31,13 @@ type customUnimplemented struct {
 var _ = Describe("Null[T]", func() {
 	Describe("JSON Marshaler", func() {
 		It("returns the valid []byte", func() {
-			data := types.Null[string]{V: "Chicken", Valid: true}
+			data := types.NewNull("Chicken", true)
 
 			res, err := json.Marshal(data)
 			Expect(err).To(BeNil())
 			Expect(res).To(Equal([]byte(`"Chicken"`)))
 
-			data2 := types.Null[int]{V: 12, Valid: true}
+			data2 := types.NewNull(12, true)
 
 			res, err = json.Marshal(data2)
 
@@ -46,7 +46,7 @@ var _ = Describe("Null[T]", func() {
 		})
 
 		It("returns nil byte when data invalid", func() {
-			data := types.Null[string]{Valid: false}
+			data := types.NewNull("", false)
 
 			res, err := json.Marshal(data)
 			Expect(err).To(BeNil())
@@ -54,7 +54,7 @@ var _ = Describe("Null[T]", func() {
 		})
 
 		It("handles Date", func() {
-			date := types.Null[types.Date]{V: types.MustParseDate("2026-04-01"), Valid: true}
+			date := types.NewNull[types.Date](types.MustParseDate("2026-04-01"), true)
 
 			res, err := json.Marshal(date)
 			Expect(err).To(BeNil())
@@ -62,10 +62,10 @@ var _ = Describe("Null[T]", func() {
 		})
 
 		It("handles LocalDateTime", func() {
-			date := types.Null[types.LocalDateTime]{
-				V:     types.MustParseLocalDateTime("2025-05-01T08:00:00Z"),
-				Valid: true,
-			}
+			date := types.NewNull[types.LocalDateTime](
+				types.MustParseLocalDateTime("2025-05-01T08:00:00Z"),
+				true,
+			)
 
 			res, err := json.Marshal(date)
 			Expect(err).To(BeNil())
@@ -244,7 +244,7 @@ var _ = Describe("Null[T]", func() {
 
 	Describe("MarshalText", func() {
 		It("handles null", func() {
-			data := types.Null[string]{Valid: false}
+			data := types.NewNull[string]("", false)
 			res, err := data.MarshalText()
 			Expect(err).To(BeNil())
 			Expect(res).To(BeNil())
@@ -252,28 +252,28 @@ var _ = Describe("Null[T]", func() {
 	})
 
 	It("handles primitive types", func() {
-		dataStr := types.Null[string]{V: "OI", Valid: true}
+		dataStr := types.NewNull[string]("OI", true)
 
 		resStr, err := dataStr.MarshalText()
 
 		Expect(err).To(BeNil())
 		Expect(resStr).To(Equal([]byte("OI")))
 
-		dataBool := types.Null[bool]{V: true, Valid: true}
+		dataBool := types.NewNull[bool](true, true)
 
 		resBool, err := dataBool.MarshalText()
 
 		Expect(err).To(BeNil())
 		Expect(resBool).To(Equal([]byte("true")))
 
-		dataInt := types.Null[int]{V: 10, Valid: true}
+		dataInt := types.NewNull[int](10, true)
 
 		resInt, err := dataInt.MarshalText()
 
 		Expect(err).To(BeNil())
 		Expect(resInt).To(Equal([]byte("10")))
 
-		dataInt64 := types.Null[int64]{V: int64(10), Valid: true}
+		dataInt64 := types.NewNull[int64](int64(10), true)
 		resInt64, err := dataInt64.MarshalText()
 
 		Expect(err).To(BeNil())
@@ -281,7 +281,7 @@ var _ = Describe("Null[T]", func() {
 	})
 
 	It("handles custom type", func() {
-		data := types.Null[foo]{Valid: true}
+		data := types.NewNull[foo](foo{}, true)
 
 		res, err := data.MarshalText()
 		Expect(err).To(BeNil())
@@ -289,7 +289,7 @@ var _ = Describe("Null[T]", func() {
 	})
 
 	It("returns error when custom type does not implement Marshaler", func() {
-		data := types.Null[customUnimplemented]{V: customUnimplemented{data: 100}, Valid: true}
+		data := types.NewNull[customUnimplemented](customUnimplemented{data: 100}, true)
 
 		_, err := data.MarshalText()
 
@@ -297,7 +297,7 @@ var _ = Describe("Null[T]", func() {
 	})
 
 	It("handles Date", func() {
-		data := types.Null[types.Date]{Valid: true, V: types.MustParseDate("2025-04-01")}
+		data := types.NewNull[types.Date](types.MustParseDate("2025-04-01"), true)
 		res, err := data.MarshalText()
 
 		Expect(err).To(BeNil())
@@ -305,10 +305,7 @@ var _ = Describe("Null[T]", func() {
 	})
 
 	It("handles LocalDateTime", func() {
-		data := types.Null[types.LocalDateTime]{
-			Valid: true,
-			V:     types.MustParseLocalDateTime("2025-05-01T08:00:00Z"),
-		}
+		data := types.NewNull[types.LocalDateTime](types.MustParseLocalDateTime("2025-05-01T08:00:00Z"), true)
 		res, err := data.MarshalText()
 
 		Expect(err).To(BeNil())
@@ -317,7 +314,7 @@ var _ = Describe("Null[T]", func() {
 
 	Context("Given slices", func() {
 		It("handles primitive slice", func() {
-			data := types.Null[[]int]{V: []int{1, 3, 4, 5, 6, 7, 8}, Valid: true}
+			data := types.NewNull[[]int]([]int{1, 3, 4, 5, 6, 7, 8}, true)
 
 			res, err := data.MarshalText()
 
@@ -326,11 +323,11 @@ var _ = Describe("Null[T]", func() {
 		})
 
 		It("handles uuid slice", func() {
-			data := types.Null[[]uuid.UUID]{V: []uuid.UUID{
+			data := types.NewNull[[]uuid.UUID]([]uuid.UUID{
 				uuid.MustParse("278c00cb-c6fe-4eb6-a215-876537a1dda6"),
 				uuid.MustParse("568e139f-7d1f-4456-a9e6-f887f26a9a48"),
 				uuid.MustParse("153326f5-9db9-4522-ac14-625b282be053"),
-			}, Valid: true}
+			}, true)
 
 			res, err := data.MarshalText()
 
@@ -339,11 +336,11 @@ var _ = Describe("Null[T]", func() {
 		})
 
 		It("handles Date", func() {
-			data := types.Null[[]types.Date]{V: []types.Date{
+			data := types.NewNull[[]types.Date]([]types.Date{
 				types.MustParseDate("2025-01-03"),
 				types.MustParseDate("2025-04-03"),
 				types.MustParseDate("2025-05-03"),
-			}, Valid: true}
+			}, true)
 
 			res, err := data.MarshalText()
 
@@ -352,11 +349,11 @@ var _ = Describe("Null[T]", func() {
 		})
 
 		It("handles LocalDateTime", func() {
-			data := types.Null[[]types.LocalDateTime]{V: []types.LocalDateTime{
+			data := types.NewNull[[]types.LocalDateTime]([]types.LocalDateTime{
 				types.MustParseLocalDateTime("2025-05-01T08:00:00Z"),
 				types.MustParseLocalDateTime("2025-05-02T08:00:00Z"),
 				types.MustParseLocalDateTime("2025-05-03T08:00:00Z"),
-			}, Valid: true}
+			}, true)
 
 			res, err := data.MarshalText()
 

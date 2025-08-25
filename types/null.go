@@ -14,7 +14,9 @@ import (
 	"github.com/google/uuid"
 )
 
-type Null[T any] sql.Null[T]
+type Null[T any] struct {
+	sql.Null[T]
+}
 
 // UnmarshalJSON implements json.Unmarshaler.
 func (n *Null[T]) UnmarshalJSON(data []byte) error {
@@ -172,4 +174,13 @@ func (n Null[T]) MarshalText() (text []byte, err error) {
 	}
 
 	return nil, fmt.Errorf("Please implement encoding.TextMarshaler for type %v", reflect.TypeFor[T]().String())
+}
+
+func NewNull[T any](v T, valid bool) Null[T] {
+	return Null[T]{
+		Null: sql.Null[T]{
+			V:     v,
+			Valid: valid,
+		},
+	}
 }

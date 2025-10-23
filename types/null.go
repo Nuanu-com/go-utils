@@ -184,3 +184,11 @@ func NewNull[T any](v T, valid bool) Null[T] {
 		},
 	}
 }
+
+func MapNull[T, R any](data Null[T], predicate func(data T) Null[R]) Null[R] {
+	if data.Valid {
+		return predicate(data.V)
+	}
+
+	return Null[R]{}
+}

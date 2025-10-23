@@ -2,6 +2,7 @@ package types_test
 
 import (
 	"encoding/json"
+	"fmt"
 
 	"github.com/Nuanu-com/go-utils/types"
 
@@ -360,5 +361,15 @@ var _ = Describe("Null[T]", func() {
 			Expect(err).To(BeNil())
 			Expect(res).To(Equal([]byte("2025-05-01T08:00:00Z,2025-05-02T08:00:00Z,2025-05-03T08:00:00Z")))
 		})
+	})
+})
+
+var _ = Describe("MapNull", func() {
+	It("Converts the data when the value is not null", func() {
+		data1 := types.MapNull(types.NewNull(1, true), func(i int) types.Null[string] { return types.NewNull(fmt.Sprintf("%d", i), true) })
+		Expect(data1).To(Equal(types.NewNull("1", true)))
+
+		data2 := types.MapNull(types.NewNull(1, false), func(i int) types.Null[string] { return types.NewNull(fmt.Sprintf("%d", i), true) })
+		Expect(data2).To(Equal(types.NewNull("", false)))
 	})
 })

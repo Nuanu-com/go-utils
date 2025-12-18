@@ -78,3 +78,23 @@ func MustParseDate(text string) Date {
 
 	return Date{Time: t}
 }
+
+func (d Date) Between(d1 Date, d2 Date) bool {
+	return d.Equal(d1.Time) || d.Equal(d2.Time) || (d.After(d1.Time) && d.Before(d2.Time))
+}
+
+func MustParseDateLocal(data string) Date {
+	res, err := time.Parse(StandardDateFormat, data)
+
+	if err != nil {
+		panic(err.Error())
+	}
+
+	return Date{Time: time.Date(res.Year(), res.Month(), res.Day(), 0, 0, 0, 0, time.Local)}
+}
+
+func DatetimeToDate(data time.Time) Date {
+	return Date{
+		Time: time.Date(data.Year(), data.Month(), data.Day(), 0, 0, 0, 0, time.UTC),
+	}
+}

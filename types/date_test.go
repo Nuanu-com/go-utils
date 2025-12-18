@@ -65,4 +65,19 @@ var _ = Describe("Date", func() {
 			Expect(err).To(MatchError(`parsing time "2026-08-19T": extra text: "T"`))
 		})
 	})
+
+	Describe("Between", func() {
+		It("returns true if the data is between inclusive 2 dates", func() {
+			d := types.MustParseDate("2025-11-12")
+
+			Expect(d.Between(types.MustParseDate("2025-11-12"), types.MustParseDate("2025-11-15"))).To(BeTrue())
+			Expect(d.Between(types.MustParseDate("2025-11-10"), types.MustParseDate("2025-11-15"))).To(BeTrue())
+
+			Expect(d.Between(types.MustParseDate("2025-11-10"), types.MustParseDate("2025-11-12"))).To(BeTrue())
+
+			Expect(d.Between(types.MustParseDate("2025-11-13"), types.MustParseDate("2025-11-15"))).To(BeFalse())
+
+			Expect(d.Between(types.MustParseDate("2025-11-07"), types.MustParseDate("2025-11-11"))).To(BeFalse())
+		})
+	})
 })

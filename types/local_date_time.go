@@ -8,6 +8,7 @@ import (
 
 const StandardDateTimeFormat = "2006-01-02T15:04:05Z"
 
+// Deprecated: LocalDateTime is deprecated. Use LocalTime instead.
 type LocalDateTime struct {
 	time.Time
 }
